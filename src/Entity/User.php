@@ -54,7 +54,7 @@ class User
     private $avatar;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Article", mappedBy="user")
+     * @ORM\OneToMany(targetEntity="App\Entity\Post", mappedBy="user")
      */
     private $articles;
 
@@ -153,14 +153,14 @@ class User
     }
 
     /**
-     * @return Collection|Article[]
+     * @return Collection|Post[]
      */
     public function getArticles(): Collection
     {
         return $this->articles;
     }
 
-    public function addArticle(Article $article): self
+    public function addArticle(Post $article): self
     {
         if (!$this->articles->contains($article)) {
             $this->articles[] = $article;
@@ -170,7 +170,7 @@ class User
         return $this;
     }
 
-    public function removeArticle(Article $article): self
+    public function removeArticle(Post $article): self
     {
         if ($this->articles->contains($article)) {
             $this->articles->removeElement($article);

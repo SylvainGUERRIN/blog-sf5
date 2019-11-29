@@ -34,13 +34,14 @@ class Tag
     private $description;
 
     /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\Article", mappedBy="tags")
+     * @ORM\ManyToMany(targetEntity="App\Entity\Post", mappedBy="tags")
      */
-    private $articles;
+    private $posts;
 
     public function __construct()
     {
         $this->articles = new ArrayCollection();
+        $this->posts = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -85,28 +86,28 @@ class Tag
     }
 
     /**
-     * @return Collection|Article[]
+     * @return Collection|Post[]
      */
-    public function getArticles(): Collection
+    public function getPosts(): Collection
     {
-        return $this->articles;
+        return $this->posts;
     }
 
-    public function addArticle(Article $article): self
+    public function addPost(Post $post): self
     {
-        if (!$this->articles->contains($article)) {
-            $this->articles[] = $article;
-            $article->addTag($this);
+        if (!$this->posts->contains($post)) {
+            $this->posts[] = $post;
+            $post->addTag($this);
         }
 
         return $this;
     }
 
-    public function removeArticle(Article $article): self
+    public function removePost(Post $post): self
     {
-        if ($this->articles->contains($article)) {
-            $this->articles->removeElement($article);
-            $article->removeTag($this);
+        if ($this->posts->contains($post)) {
+            $this->posts->removeElement($post);
+            $post->removeTag($this);
         }
 
         return $this;
