@@ -5,11 +5,12 @@ namespace App\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
  */
-class User
+class User implements UserInterface, \Serializable
 {
     /**
      * @ORM\Id()
@@ -181,5 +182,84 @@ class User
         }
 
         return $this;
+    }
+
+    /**
+     * @inheritDoc
+     * @return []
+     */
+    public function getRoles(): array
+    {
+        if($this->getRole() === 'admin'){
+            return ['ROLE_ADMIN'];
+        }
+
+        return ['ROLE_USER'];
+    }
+
+    /**
+     * @inheritDoc
+     * si sur l'entité pas de getter Password
+     * le spécifié ici et retourner le mot de passe de l'entité
+     */
+    public function getPassword(): ?string
+    {
+        return $this->pass;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getSalt(): ?string
+    {
+        return null;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function eraseCredentials(): void
+    {
+        // TODO: Implement eraseCredentials() method.
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function serialize(): string
+    {
+        // add $this->salt too if you don't use Bcrypt or Argon2i
+        return serialize([$this->id, $this->username, $this->mail, $this->pass]);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function unserialize($serialized): void
+    {
+        // add $this->salt too if you don't use Bcrypt or Argon2i
+        [$this->id, $this->username, $this->mail, $this->pass] = unserialize($serialized, ['allowed_classes' => false]);
+    }
+
+    public function getUpdatedAt(): ?\DateTimeInterface
+    {
+        return $this->updated_at;
+    }
+
+    public function setUpdatedAt(?\DateTimeInterface $updated_at): self
+    {
+        $this->updated_at = $updated_at;
+
+        return $this;
+    }
+
+    public function getAvatarFile(): ?string
+    {
+        return $this->avatar_file;
+    }
+
+    public function setAvatarFile(?string $avatar_file): void
+    {
+        $this->avatar_file = $avatar_file;
     }
 }

@@ -1,0 +1,58 @@
+{% set current = app.request.attributes.get("_route") %}
+{% if catSlug is defined %}
+    {% set category = catSlug %}
+{% endif %}
+<div class="top-bar">
+    <div class="container">
+        <div class="top-bar-list">
+            <div class="top-bar-item">
+                <a href="https://www.sylvain-guerrin.fr" target="_blank">Sylvain Guerrin</a>
+            </div>
+            <div class="top-bar-item">
+                <i class="fas fa-mobile-alt"></i>
+                <a href="tel:0643152243">06 43 15 22 43</a>
+            </div>
+            <div class="top-bar-item">
+                <i class="fas fa-paper-plane"></i>
+                <a href="mailto:sguerrin549@gmail.com">sguerrin@gmail.com</a>
+            </div>
+        </div>
+    </div>
+</div>
+<header>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container">
+            <a class="navbar-brand" href="{{ path('home') }}"><img src="{{ asset('assets/logo/logo-map.png') }}" alt="logo Sylvain Guerrin freelance"> Le Blog</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item {% if current == 'home' %}active{% endif %}">
+                        <a class="nav-link" href="{{ path('home') }}">Accueil </a>
+                    </li>
+                    {% if tags is not empty %}
+                        {% for tag in tags %}
+                            <li class="nav-item{% if category is defined and category == tag.slug %} active{% endif %}">
+                                <a class="nav-link" href="{{ path('categorie_show', {'slugcat': tag.slug}) }}">{{ tag.name }}</a>
+                            </li>
+                        {% endfor %}
+                    {% endif %}
+                    <li class="nav-item {% if current == 'contact' %}active{% endif %}">
+                        <a class="nav-link" href="{{ path('contact') }}">Contact</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+</header>
+{% for label, messages in app.flashes %}
+    <div class="container text-center pt-5">
+        <div class="alert alert-{{ label }}">
+            {% for message in messages %}
+                <p>{{ message | raw }}</p>
+            {% endfor %}
+        </div>
+    </div>
+{% endfor %}

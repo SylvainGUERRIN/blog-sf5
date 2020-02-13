@@ -5,6 +5,8 @@ namespace App\Repository;
 use App\Entity\Tag;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\ORM\NoResultException;
 
 /**
  * @method Tag|null find($id, $lockMode = null, $lockVersion = null)
@@ -19,32 +21,42 @@ class TagRepository extends ServiceEntityRepository
         parent::__construct($registry, Tag::class);
     }
 
-    // /**
-    //  * @return Tag[] Returns an array of Tag objects
-    //  */
-    /*
-    public function findByExampleField($value)
-    {
-        return $this->createQueryBuilder('t')
-            ->andWhere('t.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('t.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
+    /**
+     * @return mixed
+     */
+    public function countCategories(){
+        return $this->getEntityManager()
+            ->createQuery(
+                'SELECT COUNT(t) FROM App\Entity\Tag t'
+            )
+            ->getResult();
     }
-    */
 
-    /*
-    public function findOneBySomeField($value): ?Tag
+    /**
+     * @param $value
+     * @return mixed
+     * @throws NonUniqueResultException
+     */
+    public function findByName($value)
     {
         return $this->createQueryBuilder('t')
-            ->andWhere('t.exampleField = :val')
+            ->select('t.id')
+            ->Where('t.slug = :val')
             ->setParameter('val', $value)
             ->getQuery()
-            ->getOneOrNullResult()
-        ;
+            ->getOneOrNullResult();
     }
-    */
+
+    /**
+     * @return mixed
+     * @throws NonUniqueResultException
+     * @throws NoResultException
+     */
+    public function countNbCategories()
+    {
+        return $this->createQueryBuilder('t')
+            ->select('COUNT(t)')
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
 }
